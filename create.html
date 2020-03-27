@@ -89,6 +89,10 @@
     width: 100px;
   }
 
+  footer {
+    position: absolute;
+    bottom: 0;
+  }
 </style>
 
 <body style="overflow: hidden; position: fixed; margin-top: 0;">
@@ -107,34 +111,34 @@
           <div class="content">
             <div class="form-group" style="padding-bottom: 2rem;">
               <label style="font-size: 1.2rem;" for="event">Event</label>
-              <input type="text" class="form-control" id="event" placeholder="what do you want to track?"
-                maxlength="20">
+              <input type="text" class="form-control" id="event" placeholder="what do you want to track?" maxlength="20"
+                required>
             </div>
 
             <label style="font-size: 1.2rem;">Tracking Time</label>
             <div class="form-group row">
               <label class="col-2 col-form-label" for="startDate">Start:</label>
               <div class="col-10">
-                <input id="startDate" placeholder="mm/dd/yyyy"/>
+                <input id="startDate" placeholder="mm/dd/yyyy" />
               </div>
             </div>
 
             <div class="form-group row">
               <label class="col-2 col-form-label" for="endDate">End:</label>
               <div class="col-10">
-                <input id="endDate" placeholder="mm/dd/yyyy"/>
+                <input id="endDate" placeholder="mm/dd/yyyy" />
               </div>
             </div>
           </div>
+
+          <footer>
+            <div class="w-75 d-flex justify-content-between header-child t-5 credit">
+              <button type="submit" class="btn btn-color1">Save</button>
+              <a href="index.html" class="btn btn-color2">Cancel</a>
+            </div>
+          </footer>
         </form>
       </div>
-
-      <footer>
-        <div class="w-75 d-flex justify-content-between header-child t-5 credit">
-          <button href="index.html" type="submit" class="btn btn-color1">Save</button>
-          <button href="index.html" type="submit" class="btn btn-color2">Cancel</button>
-        </div>
-      </footer>
     </div>
   </div>
 
