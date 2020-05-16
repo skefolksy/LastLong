@@ -117,7 +117,7 @@ footer {
 
 .wrap {
   /* สีพื้นหลัง app */
-  background-color: whitesmoke;
+  background-color: rgb(245, 245, 245);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -128,7 +128,7 @@ footer {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
 }
 
@@ -136,9 +136,33 @@ footer {
   height: calc(100% - 150px);
   width: 100%;
   position: relative;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .credit {
   font-size: 14px;
+}
+
+form {
+  width: 100%;
+}
+
+.topSection{
+  align-items: center;
+  height: 50vh;
+  padding: 5vh 0;
+}
+
+.underSection{
+  align-items: center;
+  height: 50vh;
+  padding: 5vh 0;
+}
+
+.topSection p {
+  margin: 0  0  2vh;
+}
+
+.underSection p{
+  margin: 0  0  2vh;
 }

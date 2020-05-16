@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow: hidden;">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset=utf-8>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="LastLong">
+  <meta name="application-name" content="LastLong">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="theme-color" content="#000000">
+  <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+  <link rel="manifest" href="./favicon/site.webmanifest">
+  <link rel="mask-icon" href="./favicon/safari-pinned-tab.svg" color="#000000">
+  <link rel="shortcut icon" href="./favicon/favicon.ico">
+
+  <!-- Primary Meta Tags -->
+  <title>LastLong</title>
+  <meta name="title" content="LastLong">
+  <meta name="description" content="LastLong">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+  <meta property="og:title" content="LastLong">
+  <meta property="og:description" content="LastLong">
+  <meta property="og:image" content="">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="">
+  <meta property="twitter:title" content="LastLong">
+  <meta property="twitter:description" content="LastLong">
+  <meta property="twitter:image" content="">
+
+  <!-- style and fonts -->
+  <script defer src="./fontawesome/all.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Prompt|Sen&display=swap" rel="stylesheet">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<style>
+  .close {
+    position: absolute;
+    right: 0;
+    padding: 10px;
+    padding-right: 20px;
+  }
+
+  .edit {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 10px;
+    padding-left: 8%;
+    color: grey;
+    font-size: 2rem;
+  }
+
+  .delete {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 10px;
+    padding-right: 8%;
+    color: grey !important;
+    font-size: 2rem;
+  }
+</style>
+
+<body style="overflow: hidden; position: fixed; margin-top: 0;">
+  <div id="app">
+    <div class="wrap" style="background-color: #fff;">
+
+      <div class="screen" style="height: 100vh;">
+        <!-- ทำตรงนี้ -->
+        <div id="displaySection">
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-analytics.js"></script>
+
+  <script src="./js/firebase.js"></script>
+
+  <script>
+    let keyEvent = getParameterByName('keyEvent')
+    console.log("-> ", keyEvent)
+
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+
+    }
+
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in.
+        // `users/${user.uid}/events`
+        firebase.database().ref('users/' + user.uid + '/events/' + keyEvent).once('value').then(function (
+          snapshot) {
+          let events = snapshot.val()
+
+          displayDetail(events)
+
+        });
+      } else {
+        // No user is signed in.
+        document.location.href = '/login.html'
+      }
+    });
+
+    function displayDetail(event) {
+      let displaySection = document.getElementById('displaySection');
+      // displaySection.innerHTML = ""
+      let newDiv = document.createElement("div");
+
+      let toDay = new Date()
+      let startDate = new Date(event.start)
+      let endDate = new Date(event.end)
+      let dayPassed = Math.round((toDay - startDate) / (1000 * 60 * 60 * 24));
+      let tillEnd = Math.round((endDate - toDay) / (1000 * 60 * 60 * 24))
+      dayPassed = Math.max(dayPassed, 0)
+      tillEnd = Math.max(tillEnd, 0)
+
+      console.log("event color = ", event.color)
+      console.log("id = ", event)
+
+      if (event.end) {
+
+        newDiv.innerHTML = `
+          <a href="index.html" class="close">
+            <i class="fas fa-times"></i>
+          </a>
+
+          <div class="topSection" style="background-color:${event.color};">
+            <p style="font-size: 2.5rem;"><b>${event.title}</b></p>
+            <p style="font-size: 4rem; color: white;">${dayPassed}</p>
+            <p style="font-size: 1.5rem;">${dayPassed>1 ? 'days' : 'day'} ago</p>
+          </div>
+
+          <div class="underSection" style="background-color:#fff;">
+            <p style="font-size: 4rem;">${tillEnd}</p>
+            <p style="font-size: 1.5rem;">${tillEnd>1 ? 'days' : 'day'} left</p>
+            <a href="./edit.html?keyEvent=${keyEvent}" class="edit">
+              <i class="far fa-edit"></i>
+            </a>
+            <a onclick="deleteEvent()" class="delete">
+              <i class="far fa-trash-alt"></i>
+            </a>
+          </div>
+      `
+      } else {
+
+        newDiv.innerHTML = `
+          <a href="index.html" class="close">
+            <i class="fas fa-times"></i>
+          </a>
+
+          <div class="topSection" style="background-color:${event.color};">
+            <p style="font-size: 2.5rem;"><b>${event.title}</b></p>
+            <p style="font-size: 4rem; color: white;">${dayPassed}</p>
+            <p style="font-size: 1.5rem;">${dayPassed>1 ? 'days' : 'day'} ago</p>
+          </div>
+
+          <div class="underSection" style="background-color:#fff;">
+            <a href="./edit.html?keyEvent=${keyEvent}" class="edit">
+              <i class="far fa-edit"></i>
+            </a>
+            <a onclick="deleteEvent()" class="delete">
+              <i class="far fa-trash-alt"></i>
+            </a>
+          </div>
+      `
+      }
+
+
+      displaySection.appendChild(newDiv)
+
+    }
+
+    function deleteEvent() {
+      firebase.auth().onAuthStateChanged(function (user) {
+        firebase.database().ref('users/' + user.uid + '/events/' + keyEvent).remove().then(() => {
+          alert('Deleted')
+          document.location.href = '/index.html'
+        });
+      });
+    }
+  </script>
+</body>
+
+</html>

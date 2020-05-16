@@ -1,0 +1,99 @@
+#colorSection {
+    top: 35%;
+    left: 35%;
+    font-family: 'lato';
+    color: #333;
+    padding-bottom: 1rem;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+input[type="radio"]:checked+ .colorLabel span {
+    transform: scale(1.25);
+}
+
+input[type="radio"]:checked+ .colorLabel .red {
+    border: 2px solid #711313;
+}
+
+input[type="radio"]:checked+ .colorLabel .orange {
+    border: 2px solid #873a08;
+}
+
+input[type="radio"]:checked+ .colorLabel .yellow {
+    border: 2px solid #816102;
+}
+
+input[type="radio"]:checked+ .colorLabel .olive {
+    border: 2px solid #505a0b;
+}
+
+input[type="radio"]:checked+ .colorLabel .green {
+    border: 2px solid #0e4e1d;
+}
+
+input[type="radio"]:checked+ .colorLabel .teal {
+    border: 2px solid #003633;
+}
+
+input[type="radio"]:checked+ .colorLabel .blue {
+    border: 2px solid #103f62;
+}
+
+input[type="radio"]:checked+ .colorLabel .violet {
+    border: 2px solid #321a64;
+}
+
+
+.colorLabel {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.colorLabel:hover span {
+    transform: scale(1.25);
+}
+
+.colorLabel span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: transform .2s ease-in-out;
+}
+
+.colorLabel span.red {
+    background: #C44953;
+}
+
+.colorLabel span.orange {
+    background: #FFA755;
+}
+
+.colorLabel span.yellow {
+    background: #F8C865;
+}
+
+.colorLabel span.olive {
+    background: #98B08B;
+}
+
+.colorLabel span.green {
+    background: #3D8B7D;
+}
+
+.colorLabel span.teal {
+    background: #8AC4D0;
+}
+
+.colorLabel span.blue {
+    background: #3E83A8;
+}
+
+.colorLabel span.violet {
+    background: #B87A9E;
+}

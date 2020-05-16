@@ -97,25 +97,84 @@
     <div class="wrap">
       <header>
         <div class="header-child">
-          <span class="ml-2 h1"><b>CREATE</b></span>
+          <span class="ml-2 h1"><b>EDIT</b></span>
         </div>
       </header>
 
       <div class="screen">
         <!-- ทำตรงนี้ -->
 
+        <div id="editSection">
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase.js"></script>
+
+  <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-analytics.js"></script>
+
+  <script src="./js/firebase.js"></script>
+
+  <script>
+    let user = null
+    let keyEvent = getParameterByName('keyEvent')
+
+    function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, '\\$&');
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, ' '));
+
+    }
+
+    firebase.auth().onAuthStateChanged(function (currentUser) {
+      if (currentUser) {
+        // User is signed in.
+        user = currentUser
+
+        firebase.database().ref('users/' + user.uid + '/events/' + keyEvent).once('value').then(function (
+          snapshot) {
+          let events = snapshot.val()
+
+          displayEdit(events)
+
+        });
+      } else {
+        // No user is signed in.
+        document.location.href = '/login.html'
+      }
+    });
+  </script>
+
+  <script>
+    function displayEdit(event) {
+      let editSection = document.getElementById('editSection');
+      // displaySection.innerHTML = ""
+      let newDiv = document.createElement("div");
+
+
+      newDiv.innerHTML = `
         <form onsubmit="saveData(); return false">
           <div class="content">
             <div class="form-group" style="padding-bottom: 1rem;">
               <label style="font-size: 1.2rem;" for="title">Event</label>
-              <input type="text" class="form-control" id="title" placeholder="what do you want to track?" maxlength="20"
+              <input type="text" class="form-control" id="title" value="${event.title}" maxlength="20"
                 required>
             </div>
 
             <label style="font-size: 1.2rem;">Background color</label>
             <div id="colorSection">
 
-              <input type="radio" name="bgColor" id="red" value="#C44953" />
+              <input type="radio" name="bgColor" id="red" value="#C44953" checked/>
               <label for="red" class="colorLabel"><span class="red"></span></label>
 
               <input type="radio" name="bgColor" id="orange" value="#FFA755" />
@@ -141,21 +200,21 @@
 
             </div>
 
-
             <label style="font-size: 1.2rem;">Tracking Time</label>
             <div id="startDateGroup" class="form-group row">
               <label class="col-2 col-form-label" for="startDate">Start:</label>
               <div class="col-10">
-                <input id="startDate" placeholder="mm/dd/yyyy" required />
+                <input id="startDate" value="${event.start}" required />
               </div>
             </div>
 
             <div id="endDateGroup" class="form-group row d-none">
               <label class="col-2 col-form-label" for="endDate">End:</label>
               <div class="col-10">
-                <input id="endDate" placeholder="mm/dd/yyyy" />
+                <input id="endDate" value="${event.end}" placeholder="mm/dd/yyyy"/>
               </div>
             </div>
+
           </div>
 
           <footer>
@@ -165,50 +224,28 @@
             </div>
           </footer>
         </form>
-      </div>
-    </div>
-  </div>
+      `
 
-  <!-- The core Firebase JS SDK is always required and must be listed first -->
-  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase.js"></script>
+      editSection.appendChild(newDiv)
 
-  <!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-  <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-analytics.js"></script>
-
-  <script src="./js/firebase.js"></script>
-
-  <script>
-    let user = null
-
-    firebase.auth().onAuthStateChanged(function (currentUser) {
-      if (currentUser) {
-        // User is signed in.
-        user = currentUser
-      } else {
-        // No user is signed in.
-        document.location.href = '/login.html'
-      }
-    });
-  </script>
-
-  <script>
-    $('#startDate').datepicker({
-      uiLibrary: 'bootstrap4',
-      minDate: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
-    });
-
-    $('#startDate').change(function () {
-      // document.getElementById('endDateGroup').classList.remove('d-none')
-      $('#endDateGroup').removeClass('d-none');
-
-      $('#endDate').datepicker().destroy()
-
-      $('#endDate').datepicker({
+      $('#startDate').datepicker({
         uiLibrary: 'bootstrap4',
-        minDate: $('#startDate').val()
+        minDate: new Date(event.start)
       });
-    });
+
+      $('#startDate').change(function () {
+        // document.getElementById('endDateGroup').classList.remove('d-none')
+        $('#endDateGroup').removeClass('d-none');
+
+        $('#endDate').datepicker().destroy()
+
+        $('#endDate').datepicker({
+          uiLibrary: 'bootstrap4',
+          minDate: $('#startDate').val()
+        });
+      });
+
+    }
 
     function saveData() {
       let title = document.getElementById('title').value
@@ -218,7 +255,7 @@
       let uid = user.uid
 
 
-      firebase.database().ref(`users/${uid}/events`).push({
+      firebase.database().ref(`users/${uid}/events/${keyEvent}`).set({
         title: title,
         start: startDate,
         end: endDate,
@@ -249,7 +286,10 @@
       }
       return status_value
     }
+
   </script>
+
+
 </body>
 
 </html>

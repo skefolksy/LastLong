@@ -45,30 +45,90 @@
   <link rel="stylesheet" href="./css/style.css">
 </head>
 
+<style>
+  .screen {
+    display: flex;
+    justify-content: start;
+  }
+
+  .content {
+    padding: 0 27px;
+  }
+
+  label {
+    display: flex;
+  }
+
+  .btn-color1 {
+    background-color: #1a3557;
+    color: white;
+    font-size: 20px !important;
+  }
+
+  .btn-color2 {
+    background-color: #a5b0ba;
+    color: white;
+    font-size: 20px !important;
+  }
+
+  .btn {
+    width: 100px;
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+  }
+</style>
+
+
 <body style="overflow: hidden; position: fixed; margin-top: 0;">
   <div id="app">
     <div class="wrap">
       <header>
         <div class="header-child">
-          <span class="ml-2 h1"><b>LASTLONG</b></span>
+          <span class="ml-2 h1"><b>REGISTER</b></span>
         </div>
 
+        <div class="header-child">
+        </div>
       </header>
 
       <div class="screen">
-        <div id="cardGroup" class="container py-4 px-4">
-          <!-- ทำตรงนี้ -->
+        <!-- ทำตรงนี้ -->
 
-        </div>
+        <form onsubmit="regist(); return false">
+
+          <div class="content">
+            <div class="form-group" style="padding-bottom: 1rem;">
+              <label style="font-size: 1rem;" for="name">Full name</label>
+              <input type="text" class="form-control" id="name" placeholder="Full name" required>
+            </div>
+
+
+            <div class="form-group" style="padding-bottom: 1rem;">
+              <label style="font-size: 1rem;" for="email">Email</label>
+              <input type="email" class="form-control" id="email" placeholder="Email" required>
+            </div>
+
+            <div class="form-group" style="padding-bottom: 1rem;">
+              <label style="font-size: 1rem;" for="password">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="Password" required>
+            </div>
+          </div>
+
+          <footer>
+            <div class="d-flex justify-content-between header-child t-5 credit">
+              <button type="submit" class="btn btn-color1">Register</button>
+            </div>
+          </footer>
+        </form>
+
       </div>
 
-      <footer>
-        <div class="header-child t-5 credit">
-          <a href="create.html"><i class="fal fa-plus-circle" style="font-size: 50px; color: rgb(41, 41, 41);"></i></a>
-        </div>
-      </footer>
     </div>
   </div>
+
 
   <!-- The core Firebase JS SDK is always required and must be listed first -->
   <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase.js"></script>
@@ -80,51 +140,24 @@
   <script src="./js/firebase.js"></script>
 
   <script>
-    firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        // User is signed in.
-        // `users/${user.uid}/events`
-        firebase.database().ref('users/' + user.uid + '/events').on('value', function (snapshot) {
-          let events = snapshot.val()
+    function regist() {
+      let email = document.getElementById('email').value
+      let password = document.getElementById('password').value
 
-          render(events)
-
-        });
-      } else {
-        // No user is signed in.
+      firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
+        alert('Registered')
         document.location.href = '/login.html'
-      }
-    });
+      }).catch(function (error) {
+        // Handle Errors here.
+        let errorCode = error.code;
+        let errorMessage = error.message;
 
-    function render(events) {
-      let cardGroup = document.getElementById('cardGroup');
-      cardGroup.innerHTML = ""
-
-      for (event in events) {
-        let newDiv = document.createElement("div");
-        let toDay = new Date()
-        let startDate = new Date(events[event].start)
-        let dayPassed = Math.round((toDay - startDate) / (1000 * 60 * 60 * 24));
-        dayPassed = Math.max(dayPassed, 0)
-
-        newDiv.innerHTML = `
-          <div class="card shadow container my-3" onclick="location.href='./detail.html?keyEvent=${event}';" style="cursor: pointer; background-color:${events[event].color}">
-            <div class="h-100 w-100 d-flex justify-content-between align-items-center">
-              <div class="title">
-                <span class="h3 text-white text-truncate">${events[event].title}</span>
-              </div>
-              <div class="info">
-                <div><span class="h1">${dayPassed}</span></div>
-                <div><span class="h6">${dayPassed>1 ? 'days' : 'day'} ago</span></div>
-              </div>
-            </div>
-          </div>
-        `
-
-        cardGroup.appendChild(newDiv)
-      }
+        alert(errorMessage)
+        // ...
+      });
     }
   </script>
+
 </body>
 
 </html>
