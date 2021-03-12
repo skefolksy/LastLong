@@ -148,7 +148,7 @@
 
       firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
         alert('Registered')
-        document.location.href = '/login.html'
+        document.location.href = './login.html'
       }).catch(function (error) {
         // Handle Errors here.
         let errorCode = error.code;
